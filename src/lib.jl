@@ -5,16 +5,16 @@ using FFTW
 const global N = 1024
 kvec(L) = [(im * 2 * pi * k) / L for k = 0:div(N, 2)]
 
+# discretizes function from 0 to L without right endpoint
 function dscrt(f, L)
-    xvec = collect(1:N-1) * L / N
+    xvec = collect(0:N-1) * (L / N)
     return (x=xvec, y=f.(xvec))
 end
-
 
 # computes pth derivative of a function using fft technique
 function deriv(f::Vector, p, kvec, N=1024)
     if div(length(f), 2) + 1 != length(kvec)
-        error("kappa vector and function vector must have the same length")
+        error("kvec and f size disagreement; kvec has size ", length(kvec), ", while div(f, 2) + 1 has size ", div(length(f), 2) + 1, ".")
     end
     return irfft(rfft(f) .* (kvec .^ p), N)
 end
