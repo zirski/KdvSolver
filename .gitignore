@@ -1,0 +1,15 @@
+# Julia artifacts
+.julia/
+
+# Compiled binaries / precompiled cache
+*.ji
+*.o
+*.so
+*.dylib
+
+# VS Code settings (optional)
+.vscode/
+
+# Environment locks (optional)
+Manifest.toml
+
