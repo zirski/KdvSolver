@@ -12,4 +12,5 @@
 
 # Environment locks (optional)
 Manifest.toml
+.DS_Store
 
