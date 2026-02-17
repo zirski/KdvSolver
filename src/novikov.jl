@@ -5,12 +5,15 @@ export yoshida_split, dscrt, gen_kvec
 include("Utils.jl")
 
 using FFTW, Plots
+# evolves linear component of KdV eqn for an initial condition f_0 to time t_f
 # Assumed form of KDV:
 # u_t + uu_x + u_xxx = 0
 const global N = 1024
 const global Ndiv2 = div(N, 2)
 
-# evolves linear component of KdV eqn for an initial condition f_0 to time t_f
+# starts for k = 0 even though according to 
+# https://juliamath.github.io/AbstractFFTs.jl/stable/api/#Public-Interface
+# this should cause weirdness
 function gen_kvec(L)
     return [(im * 2 * pi * k) / L for k = 0:Ndiv2]
 end
