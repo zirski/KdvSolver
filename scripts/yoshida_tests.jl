@@ -11,7 +11,7 @@ t_f = 1
 xvec, f_0 = dscrt(x -> f(x, t_0), L)
 _, f_f = dscrt(x -> f(x, t_f), L)
 kvec = gen_kvec(L)
-soln = yoshida_split(f_0, t_0, t_f, n_iter, kvec)
+soln = yoshida_split(f_0, t_f, n_iter, kvec)
 display(plot(xvec, abs.(soln - f_f)))
 
 

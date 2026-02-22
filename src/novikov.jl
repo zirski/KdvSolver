@@ -31,22 +31,36 @@ function evolve_l(f_0::Vector, t_f, kvec)
     return irfft(coefs, N)
 end
 
-function evolve_nl(f_0::Vector, t_0, t_f, kvec)
+function evolve_nl(f_0::Vector, t_f, kvec)
     f(x) = -x .* deriv(x, 1, kvec)
     # time steps subject to change
-    return rk4(f, t_0, f_0, t_f, 1)
+    return rk4(f, f_0, t_f, 1)
 end
 
-function yoshida_split(f_0::Vector, t_0, t_f, n, kvec)
-    dt = (t_f - t_0) / n
-    # intermediate dt
-    t = t_0
+function yoshida_split(f_0::Vector, dt, n, kvec)
+    ts = dt / n
+    tsd2 = 0.5 * ts
     soln = f_0
+
+    # symplectic operator coefficients (Yoshida 1990)
+    w3 = 0.784513610477560
+    w2 = 0.235573213359357
+    w1 = -1.17767998417887
+    w0 = 1 - 2 * (w1 + w2 + w3)
+
+    wtvec = [w3, w3, (w3 + w2), w2, (w2 + w1), w1, (w1 + w0), w0]
+
     for i = 1:n
-        # linear step
-        soln = evolve_l(soln, dt, kvec)
-        # nonlinear step
-        soln = evolve_nl(soln, t, dt, kvec)
+        for j = 1:2:size(wtvec)[1]
+            soln = evolve_l(soln, wtvec[j] * tsd2, kvec)
+            soln = evolve_nl(soln, wtvec[j+1] * ts, kvec)
+        end
+        for j = size(wtvec)[1]-1:-2:2
+            soln = evolve_l(soln, wtvec[j] * tsd2, kvec)
+            soln = evolve_nl(soln, wtvec[j-1] * ts, kvec)
+        end
+        soln = evolve_l(soln, w3 * tsd2, kvec)
+
     end
     return soln
 end
