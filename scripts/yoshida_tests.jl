@@ -1,16 +1,18 @@
 using Revise, novikov, Plots
 
 # intital waveform
+f(x, t) = 3 * c * (sech(sqrt(c) / 2 * ((x - 100) - c * t)))^2
+
 c = 0.1
-f(x, t) = 3 * c * (sech(sqrt(c) / 2 * (x - 50)))^2
-L = 100
+L = 200
 n_iter = 1000
-xvec, f_0 = dscrt(x -> f(x, 0), L)
+t_0 = 0
+t_f = 1
+xvec, f_0 = dscrt(x -> f(x, t_0), L)
+_, f_f = dscrt(x -> f(x, t_f), L)
 kvec = gen_kvec(L)
-t_f = 0.01
-soln = yoshida_split(f_0, 0, t_f, n_iter, kvec)
-plot(xvec, f_0)
-plot!(xvec, soln)
+soln = yoshida_split(f_0, t_0, t_f, n_iter, kvec)
+display(plot(xvec, abs.(soln - f_f)))
 
 
 

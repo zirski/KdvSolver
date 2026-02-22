@@ -12,17 +12,17 @@ end
 # vector-valued rk4 (autonomous)
 # f: vector-valued vectorized function
 function rk4(f::Function, t0, x0, tf, n)
-    h = (tf - t0) / n
+    dt = (tf - t0) / n
     x = x0
     t = t0
-    hdiv2 = 0.5 * h
+    hdiv2 = 0.5 * dt
     for i = 1:n
-        k1 = f(x, t)
-        k2 = f(hdiv2 .* k1 .+ x, t + hdiv2)
-        k3 = f(hdiv2 .* k2 .+ x, t + hdiv2)
-        k4 = f(h .* k3 .+ x, t + h)
-        x = x + (h / 6) * (k1 .+ 2 .* (k2 .+ k3) .+ k4)
-        t = t + h
+        k1 = f(x)
+        k2 = f(hdiv2 .* k1 .+ x)
+        k3 = f(hdiv2 .* k2 .+ x)
+        k4 = f(dt .* k3 .+ x)
+        x = x + (dt / 6) * (k1 .+ 2 .* (k2 .+ k3) .+ k4)
+        t = t + dt
     end
     return x
 end

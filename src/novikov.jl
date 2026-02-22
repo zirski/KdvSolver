@@ -24,33 +24,29 @@ function dscrt(f, L)
     return (x=xvec, y=f.(xvec))
 end
 
-function evolve_lpde(f_0::Vector, t_0, t_f, kvec)
+function evolve_l(f_0::Vector, t_f, kvec)
     # provides constants for computing final fourier coefficients
     ics = rfft(f_0)
     coefs = [ics[i] * exp(-kvec[i]^3 * t_f) for i = 1:Ndiv2+1]
     return irfft(coefs, N)
 end
 
-function kdvrk4(f_0::Vector, t_0, t_f, kvec)
-    f(x, t) = -x .* deriv(x, 1, kvec)
+function evolve_nl(f_0::Vector, t_0, t_f, kvec)
+    f(x) = -x .* deriv(x, 1, kvec)
     # time steps subject to change
-    return rk4(f, t_0, f_0, t_f, 8)
+    return rk4(f, t_0, f_0, t_f, 1)
 end
 
 function yoshida_split(f_0::Vector, t_0, t_f, n, kvec)
     dt = (t_f - t_0) / n
+    # intermediate dt
     t = t_0
-    t_next = t_0 + dt
     soln = f_0
     for i = 1:n
         # linear step
-        soln = evolve_lpde(soln, t, t_next, kvec)
-        t = t_next
-        t_next = t + dt
+        soln = evolve_l(soln, dt, kvec)
         # nonlinear step
-        soln = kdvrk4(soln, t, t_next, kvec)
-        t = t_next
-        t_next = t + dt
+        soln = evolve_nl(soln, t, dt, kvec)
     end
     return soln
 end

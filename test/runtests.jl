@@ -21,3 +21,10 @@ include("../src/Utils.jl")
 
 end
 
+@testset "rk4" begin
+    g(y, t) = (sin(t))^2 * y
+    g_solved(t) = exp(0.5 * (t - cos(t) * sin(t)))
+    y0 = 1
+    @test isapprox(g_solved(1), rk4(g, 0, y0, 1, 1000))
+end
+
