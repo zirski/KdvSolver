@@ -1,16 +1,18 @@
 using FFTW, LinearAlgebra
 
 # computes pth derivative of a function using fft technique
-function deriv!(u::Vector, u_tmp, uhat::Vector, p, kvec, plan, iplan)
+# stores result in du
+# u is only read; does not change
+function deriv!(u, du, uhat, p, kvec, plan, iplan)
     mul!(uhat, plan, u)
     @. uhat = uhat * kvec^p
-    mul!(u_tmp, iplan, uhat)
+    mul!(du, iplan, uhat)
     return nothing
 end
 # vector-valued rk4 (autonomous)
 # updates input vector x0 in-place: THROWS AWAY INITIAL CONDITION
 # f: vector-valued vectorized function
-function rk4!(f!::Function, u::Vector, t, n, ks, u_tmp)
+function rk4!(f!::Function, u, u_tmp, t, n, ks)
     dt = t / n
     dtd2 = 0.5 * dt
     for i = 1:n

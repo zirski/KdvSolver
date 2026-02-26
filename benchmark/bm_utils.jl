@@ -15,11 +15,12 @@ _, dfvec = dscrt(df, L)
 # preallocations
 kvec = gen_kvec(L)
 fhat = zeros(ComplexF64, div(N, 2) + 1)
+f_tmp = similar(fvec)
 plan = plan_rfft(fvec)
 iplan = plan_irfft(fhat, N)
 
 println("Derivative function:")
-@btime deriv!($fvec, $fhat, 1, $kvec, $plan, $iplan)
+@benchmark deriv!($fvec, $f_tmp, $fhat, 1, $kvec, $plan, $iplan)
 
 # -----------------------------------------------------------
 # RK4
@@ -36,6 +37,6 @@ x_tmp = similar(x_0)
 x_1 = copy(x_0)
 t = 1
 println("RK4:")
-@btime rk4!($g!, $x_0, $t, n, $ks, x_tmp)
+@benchmark rk4!($g!, $x_0, $t, n, $ks, x_tmp)
 # rk4!(g!, x_0, t, n, ks)
 # @profview_allocs rk4!(g!, x_1, t, n, ks) sample_rate = 1

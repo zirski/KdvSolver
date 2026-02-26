@@ -1,4 +1,4 @@
-using Revise, Novikov, Test, Random, BenchmarkTools
+using Revise, Novikov, Test, Random, BenchmarkTools, LinearAlgebra
 
 include("../src/utils.jl")
 
@@ -40,25 +40,40 @@ end
         end
         gsolved(t) = [exp(2 * t) + 2 * exp(3 * t), 2 * exp(2 * t) + 2 * exp(3 * t)]
         x_0 = [3.0, 4.0]
-        svec = similar(x_0)
+        x_tmp = zeros(2)
         t = 1
-        rk4!(g!, x_0, t, 1000, ks, svec)
-        @test isapprox(x_0, gsolved(t))
+        rk4!(g!, x_0, x_tmp, t, 1000, ks)
+        println(x_0)
+        println(gsolved(t))
+        @test isapprox(x_0, gsolved(t), atol=1e-9)
     end
 
-    # @testset "conversion" begin
-    #     g(x) = [4 * x[1] - x[2], 2 * x[1] + x[2]]
-    #     gsolved(t) = [exp(2 * t) + 2 * exp(3 * t), 2 * exp(2 * t) + 2 * exp(3 * t)]
-    #     x_0 = [3.0, 4.0]
-    #     t = 1
-    #     n = 200
-
-    #     for i = 1:10
-    #         x = x_0
-    #         rk4!(g, x, t, n, ks)
-
-
-    # end
+    @testset "convergence" begin
+        function g!(dx, x)
+            dx[1] = 4 * x[1] - x[2]
+            dx[2] = 2 * x[1] + x[2]
+            return nothing
+        end
+        gsolved(t) = [exp(2 * t) + 2 * exp(3 * t), 2 * exp(2 * t) + 2 * exp(3 * t)]
+        x_0 = [3.0, 4.0]
+        x_tmp = similar(x_0)
+        t = 1
+        n = 200
+        x_e = gsolved(t)
+        rk4!(g!, x_0, x_tmp, t, n, ks)
+        cerr = norm(x_0 .- x_e)
+        eoc = 0
+        for i = 1:3
+            x = copy(x_0)
+            rk4!(g!, x, x_tmp, t, n, ks)
+            nerr = norm(x .- x_e)
+            eoc = log2(cerr / nerr)
+            cerr = nerr
+            println(eoc)
+            n *= 2
+        end
+        @test isapprox(eoc, 4, atol=0.5)
+    end
 end
 
 # @testset "rk4 - simple ODE" begin
