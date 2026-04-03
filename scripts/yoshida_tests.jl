@@ -1,5 +1,5 @@
 using Revise,
-    Novikov,
+    KdvSolver,
     Plots,
     BenchmarkTools,
     Elliptic,

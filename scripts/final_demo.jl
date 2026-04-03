@@ -1,5 +1,5 @@
 using Revise,
-    Novikov,
+    KdvSolver,
     Plots,
     BenchmarkTools,
     LinearAlgebra
@@ -20,8 +20,8 @@ _, u_f = dscrt(x -> u(x, t_f), L, N)
 
 kvec = gen_kvec(L, N)
 _ = yoshida_split(u_0, t_f, n_iter, kvec, N)
-print("Allocations and Speed: ")
-@btime yoshida_split(u_0, t_f, n_iter, kvec, N)
+# print("Allocations and Speed: ")
+# @btime yoshida_split(u_0, t_f, n_iter, kvec, N)
 
 au_f = yoshida_split(u_0, t_f, n_iter, kvec, N)
 println("Error (L2 norm): ", norm(au_f - u_f))

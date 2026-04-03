@@ -1,4 +1,4 @@
-name = "Novikov"
+name = "KdvSolver"
 uuid = "ef45ba1c-9ee4-4081-99a0-00823b9d3500"
 version = "0.1.0"
 authors = ["Toby Hammond <tobiasjhammond@gmail.com>"]

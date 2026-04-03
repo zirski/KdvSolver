@@ -1,4 +1,4 @@
-using Revise, Novikov, Test, Random, BenchmarkTools, LinearAlgebra
+using Revise, KdvSolver, Test, Random, BenchmarkTools, LinearAlgebra
 
 include("../src/utils.jl")
 global N = 1024

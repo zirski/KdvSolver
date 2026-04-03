@@ -1,4 +1,4 @@
-using BenchmarkTools, Novikov, Profile
+using BenchmarkTools, KdvSolver, Profile
 
 include("../src/utils.jl")
 

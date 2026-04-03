@@ -1,4 +1,4 @@
-module Novikov
+module KdvSolver
 
 export yoshida_split, dscrt, gen_kvec
 
