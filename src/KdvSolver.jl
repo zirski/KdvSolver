@@ -4,7 +4,7 @@ export yoshida_split, dscrt, gen_kvec
 
 include("utils.jl")
 
-using FFTW, Plots, LinearAlgebra
+using FFTW, LinearAlgebra
 # Assumed form of KDV:
 # u_t + uu_x + u_xxx = 0
 
