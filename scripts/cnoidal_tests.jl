@@ -1,6 +1,5 @@
 using Revise,
     KdvSolver,
-    Plots,
     BenchmarkTools,
     Elliptic,
     Elliptic.Jacobi,
@@ -69,7 +68,6 @@ for i = 1:num_tests
     local _, u_f = dscrt(x -> u(x, t_f), L, N)
     local kvec = gen_kvec(L, N)
     local au_f = yoshida_split(u_0, t_f, qs[i], kvec, N)
-    display(plot(x, au_f))
     err_raw = abs.(au_f - u_f)
     errs_l2[i] = sqrt(L / N) * norm(err_raw)
     if i > 1
